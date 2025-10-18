@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3e%3cdefs%3e%3clinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3e%3cstop offset='0%25' stop-color='%2306b6d4'/%3e%3cstop offset='100%25' stop-color='%23d946ef'/%3e%3c/linearGradient%3e%3c/defs%3e%3cpath d='M7 3H17C18.1046 3 19 3.89543 19 5V19C19 20.1046 18.1046 21 17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3Z' stroke='url(%23g)' stroke-opacity='0.3' stroke-width='1.5'/%3e%3cpath d='M4 12H8L10 8L14 16L16 12H20' stroke='url(%23g)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medicube</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Leaflet JS + CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+      :root { /* Dark mode by default */
+        --color-primary: #06b6d4; /* cyan-500 */
+        --color-primary-hover: #22d3ee; /* cyan-400 */
+        --color-secondary: #d946ef; /* fuchsia-500 */
+        --color-secondary-hover: #e879f9; /* fuchsia-400 */
+        --color-accent: #8b5cf6; /* violet-500 */
+        --color-danger: #ef4444; /* red-500 */
+        --color-danger-hover: #f87171; /* red-400 */
+        
+        --bg-deep: #0a101f;
+        --bg-medium: #0d162a;
+        --bg-light: #1f2937;
+        --bg-card: rgba(31, 41, 55, 0.5);
+        --bg-modal: #1f2937;
+        --bg-input: #374151; /* gray-700 */
+        --bg-input-hover: #4b5563; /* gray-600 */
+        --bg-accent-translucent: rgba(217, 70, 239, 0.2);
+        
+        --text-primary: #e5e7eb; /* gray-200 */
+        --text-secondary: #9ca3af; /* gray-400 */
+        --text-accent-primary: #67e8f9; /* cyan-300 */
+        --text-accent-secondary: #f0abfc; /* fuchsia-300 */
+        --text-inverted: #111827; /* gray-900 */
+        
+        --border-color: rgba(217, 70, 239, 0.2);
+        --border-strong: rgba(217, 70, 239, 0.4);
+        --shadow-color: rgba(217, 70, 239, 0.1);
+        --shadow-strong: rgba(217, 70, 239, 0.2);
+        --shadow-cyan: rgba(6, 182, 212, 0.1);
+        --shadow-danger: rgba(239, 68, 68, 0.25);
+      }
+      html.light {
+        --color-primary: #0891b2; /* cyan-600 */
+        --color-primary-hover: #06b6d4; /* cyan-500 */
+        --color-secondary: #c026d3; /* fuchsia-600 */
+        --color-secondary-hover: #d946ef; /* fuchsia-500 */
+        --color-accent: #7c3aed; /* violet-600 */
+        --color-danger: #dc2626; /* red-600 */
+        --color-danger-hover: #ef4444; /* red-500 */
+
+        --bg-deep: #f9fafb; /* gray-50 */
+        --bg-medium: #ffffff; /* white */
+        --bg-light: #f3f4f6; /* gray-100 */
+        --bg-card: #ffffff;
+        --bg-modal: #ffffff;
+        --bg-input: #e5e7eb; /* gray-200 */
+        --bg-input-hover: #d1d5db; /* gray-300 */
+        --bg-accent-translucent: rgba(192, 38, 211, 0.1);
+
+        --text-primary: #1f2937; /* gray-800 */
+        --text-secondary: #6b7280; /* gray-500 */
+        --text-accent-primary: #0891b2; /* cyan-600 */
+        --text-accent-secondary: #c026d3; /* fuchsia-600 */
+        --text-inverted: #f9fafb; /* gray-50 */
+        
+        --border-color: #e5e7eb; /* gray-200 */
+        --border-strong: #d1d5db; /* gray-300 */
+        --shadow-color: rgba(0, 0, 0, 0.05);
+        --shadow-strong: rgba(0, 0, 0, 0.1);
+        --shadow-cyan: rgba(8, 145, 178, 0.1);
+        --shadow-danger: rgba(220, 38, 38, 0.25);
+      }
+      body {
+        background-color: var(--bg-deep);
+        background-image:
+          radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+          radial-gradient(circle at 75% 75%, rgba(217, 70, 239, 0.15) 0%, transparent 40%);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      html.light body {
+        background-image: none;
+      }
+      @keyframes pulse-scale {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      @keyframes pulse-glow-fab {
+        0%, 100% {
+          box-shadow: 0 0 10px var(--color-secondary), 0 0 20px var(--color-secondary);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 20px var(--color-secondary), 0 0 40px var(--color-secondary);
+          transform: scale(1.05);
+        }
+      }
+      @keyframes pulse-glow-emergency {
+        0%, 100% {
+          box-shadow: 0 0 15px var(--color-danger), 0 0 30px var(--color-danger); /* red-500 */
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 25px var(--color-danger), 0 0 50px var(--color-danger);
+          transform: scale(1.05);
+        }
+      }
+      @keyframes text-glow-pulse {
+        0%, 100% {
+          text-shadow: 0 0 10px var(--color-secondary), 0 0 20px var(--color-secondary), 0 0 30px var(--color-accent), 0 0 40px var(--color-primary);
+        }
+        50% {
+          text-shadow: 0 0 20px var(--color-secondary), 0 0 30px var(--color-secondary), 0 0 40px var(--color-accent), 0 0 50px var(--color-primary);
+        }
+      }
+      /* Animation for pulsing green traffic signal on map */
+      @keyframes pulse-green-signal {
+        0% { transform: scale(1); opacity: 0.7; }
+        50% { transform: scale(1.5); opacity: 1; }
+        100% { transform: scale(1); opacity: 0.7; }
+      }
+      .leaflet-pulsing-icon {
+        border-radius: 50%;
+        box-shadow: 0 0 10px #34d399, 0 0 20px #34d399;
+        animation: pulse-green-signal 1.5s infinite ease-in-out;
+      }
+      /* Animation for the active ambulance marker */
+      @keyframes pulse-glow-map-icon {
+        0%, 100% {
+          box-shadow: 0 0 8px var(--color-primary), 0 0 16px var(--color-primary);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 16px var(--color-primary), 0 0 32px var(--color-primary);
+          transform: scale(1.1);
+        }
+      }
+      .leaflet-pulsing-active-ambulance {
+          border-radius: 50%;
+          animation: pulse-glow-map-icon 1.5s infinite ease-in-out;
+      }
+      /* Leaflet map tile filter for dark mode */
+      html.dark .leaflet-tile-pane {
+        filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.2.1"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

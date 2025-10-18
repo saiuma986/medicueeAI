@@ -1,0 +1,7 @@
+{
+  "name": "Medicubee",
+  "description": "Medicube is a connected healthcare web app that links hospitals, patients, ambulances, and blood donors in one intelligent system. The invisible assistant “Ghostfreak,” powered by Gemini AI, helps users find care faster, track ambulances, and donate blood — creating a truly connected healthcare universe.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
