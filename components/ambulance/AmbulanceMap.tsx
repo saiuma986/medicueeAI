@@ -173,8 +173,8 @@ const AmbulanceMap: React.FC<AmbulanceMapProps> = ({ ambulances, activeBookingId
         const bookedIcon = L.divIcon({ html: '<i class="fas fa-truck-medical fa-2x text-yellow-400"></i>', className: '', iconSize: [30, 30], iconAnchor: [15, 15] });
         const activeIcon = L.divIcon({ html: `<i class="fas fa-truck-medical fa-2x text-[var(--color-primary)]"></i>`, className: 'leaflet-pulsing-active-ambulance', iconSize: [30, 30], iconAnchor: [15, 15] });
 
-        const currentMarkerIds = new Set(ambulanceMarkersRef.current.keys());
-        const ambulancesToDisplay = new Map(ambulances.map(a => [a.id, a]));
+           const currentMarkerIds = new Set<string>(ambulanceMarkersRef.current.keys());
+           const ambulancesToDisplay = new Map<string, Ambulance>(ambulances.map(a => [a.id, a]));
 
         // Remove markers for ambulances that are no longer in the list
         currentMarkerIds.forEach(id => {
